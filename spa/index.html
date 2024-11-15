@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #6200ea;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            max-width: 80%;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        input, button {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #6200ea;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        .message {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        .error {
+            background-color: #ffcdd2;
+            color: #b71c1c;
+        }
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .color-option:hover,
+        .color-option.selected {
+            border-color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f9;
+            font-weight: bold;
+        }
+        td {
+            vertical-align: middle;
+        }
+        td input {
+            width: 90%;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        td button {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            main {
+                max-width: 90%;
+            }
+            td input {
+                width: 100%;
+            }
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>SAP Hacker in a day</h1>
+        <p>Complete the quests to earn points and get on the <a href="https://keepthescore.com/board/ncmkdskqrwjgr/">leaderboard!</a></p>
+    </header>
+    <main>
+        <section id="signup-section">
+            <h2>Sign Up to leaderboard</h2>
+            <form id="signup-form">
+                <input type="text" id="player-name" placeholder="Enter player name" required>
+                <button type="submit" id="signup-button">Submit</button>
+            </form>
+            <div class="player-name-display" id="player-name-display"></div>
+        </section>
+        <section id="exercise-section">
+            <h2>Indicate Exercise Completion</h2>
+            <p>Find the answers on the <a href="https://github.com/MartinPankraz/sap-hacker-in-a-day/">GitHub repos</a> you are working with during this hack!</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Quest</th>
+                        <th>Challenge</th>
+                        <th>Proof</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Quest 1</td>
+                        <td>Who provided the M365 phishlet?</td>
+                        <td><input type="text" id="exercise-1" placeholder="hint: Surname of that person" required></td>
+                        <td><button id="bt-1" type="button" onclick="submitExercise(1)">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Quest 2</td>
+                        <td>What is the name of your first stolen cookie?</td>
+                        <td><input type="text" id="exercise-2" placeholder="hint: starts with EST" required></td>
+                        <td><button id="bt-2" type="button" onclick="submitExercise(2)">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Quest 3</td>
+                        <td>What is the hostname of the attacked SAP system reported to Sentinel?</td>
+                        <td><input type="text" id="exercise-3" placeholder="hint: find it on your Incident details" required></td>
+                        <td><button id="bt-3" type="button" onclick="submitExercise(3)">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Quest 4</td>
+                        <td>What built-in KQL function allows to get country name from IPs?</td>
+                        <td><input type="text" id="exercise-4" placeholder="" required></td>
+                        <td><button id="bt-4" type="button" onclick="submitExercise(4)">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Quest 5</td>
+                        <td>Which LLM model are we using for this exercise?</td>
+                        <td><input type="text" id="exercise-5" placeholder="NO, it is not 🦙" required></td>
+                        <td><button id="bt-5" type="button" onclick="submitExercise(5)">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Quest 6</td>
+                        <td>Which windows command allows you to clean up the evilginx certificate?</td>
+                        <td><input type="text" id="exercise-6" placeholder="Come on, you got this!" required></td>
+                        <td><button id="bt-6" type="button" onclick="submitExercise(6)">Submit</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const playerName = document.getElementById('player-name').value;
+            const signupButton = document.getElementById('signup-button');
+            if (playerName) {
+                document.cookie = "playerName=" + playerName + "; path=/";
+                displayPlayerName(playerName);
+                document.getElementById('player-name').value = '';
+                signupButton.disabled = true;
+                // Create the JSON body
+                const data = {"name": playerName,"score": 0}
+
+                // Send the POST request
+                fetch('https://keepthescore.com/api/hlfrmddkpttte/player', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors', // Add CORS mode
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    alert("Signed up successfully!");
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert("Oops, sth is wrong! Couldn't sign you up. Sad face.");
+                });
+            }
+        });
+
+        function submitExercise(exerciseNumber) {
+            const exerciseInput = document.getElementById('exercise-' + exerciseNumber).value;
+            const submitButton = document.getElementById('bt-' + exerciseNumber);
+            let correctAnswer;
+
+            switch (exerciseNumber) {
+                case 1:
+                    correctAnswer = 'bakker';
+                    break;
+                case 2:
+                    correctAnswer = 'estsauth';
+                    break;
+                case 3:
+                    correctAnswer = 'vhcala4hci';
+                    break;
+                case 4:
+                    correctAnswer = 'geo_info_from_ip_address';
+                    break;
+                case 5:
+                    correctAnswer = 'gpt-4o';
+                    break;
+                case 6:
+                    correctAnswer = 'certmgr.msc';
+                    break;
+                default:
+                    correctAnswer = '';
+            }
+
+            if (exerciseInput.toLowerCase() === correctAnswer) {
+                alert('Quest ' + exerciseNumber + ' completed successfully!');
+                document.getElementById('exercise-' + exerciseNumber).value = '';
+                submitButton.disabled = true;
+            } else {
+                alert('Please enter the correct text for Exercise ' + exerciseNumber + '.');
+            }
+        }
+
+        function displayPlayerName(name) {
+            document.getElementById('player-name-display').textContent = "Welcome, " + name + "!";
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        window.onload = function () {
+            const playerName = getCookie('playerName');
+            if (playerName) {
+                displayPlayerName(playerName);
+            }
+        };
+    </script>
+</body>
+
+</html>
