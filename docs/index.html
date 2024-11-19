@@ -6,27 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <title>Hack Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Add Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1a1a1a;
+            color: #00ff00;
+            text-align: center;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
         }
         header {
-            background-color: #6200ea;
-            color: white;
-            padding: 1rem;
-            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            border-bottom: 2px solid #00ff00;
+        }
+        h1 {
+            font-size: 2em;
+            color: #ff00ff;
         }
         main {
             max-width: 80%;
             margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            background-color: #222;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
         }
         form {
             display: flex;
@@ -45,49 +52,30 @@
             font-size: 1rem;
         }
         button {
-            background-color: #6200ea;
-            color: white;
+            background-color: #61dafb;
+            color: #20232a;
             border: none;
+            padding: 10px 20px;
+            font-size: 1em;
             cursor: pointer;
+            border-radius: 5px;
         }
         button:hover {
-            background-color: #3700b3;
+            background-color: #21a1f1;
         }
-        .message {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            border-radius: 4px;
-        }
-        .success {
-            background-color: #c8e6c9;
-            color: #2e7d32;
-        }
-        .error {
-            background-color: #ffcdd2;
-            color: #b71c1c;
-        }
-        .color-picker {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.3s ease;
-        }
-        .color-option:hover,
-        .color-option.selected {
-            border-color: #333;
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            z-index: 1;
         }
         th, td {
             padding: 1rem;
@@ -95,7 +83,7 @@
             border: 1px solid #ddd;
         }
         th {
-            background-color: #f4f4f9;
+            background-color: #ff0000;
             font-weight: bold;
         }
         td {
@@ -126,6 +114,20 @@
             pointer-events: none;
             opacity: 0.5;
         }
+        .fa-robot {
+            font-size: 5em;
+            margin-top: 20px;
+        }
+        a {
+            color: #ff00f7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .less-highlighted {
+            color: #888; /* Change to a less highlighted color */
+        }
     </style>
 </head>
 
@@ -134,6 +136,7 @@
         <h1>SAP Hacker in a day</h1>
         <p>Complete the quests to earn points and get on the <a href="https://keepthescore.com/board/ncmkdskqrwjgr/">leaderboard!</a></p>
     </header>
+    <canvas id="matrix"></canvas>
     <main>
         <section id="signup-section">
             <h2>Sign Up to leaderboard</h2>
@@ -157,38 +160,38 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Quest 1</td>
-                        <td>Who provided the M365 phishlet?</td>
+                        <td>1</td>
+                        <td id="quest-desc-1">Who provided the M365 phishlet?</td>
                         <td><input type="text" id="exercise-1" placeholder="hint: Surname of that person" required></td>
                         <td><button id="bt-1" type="button" onclick="submitExercise(1)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>Quest 2</td>
-                        <td>What is the name of your first stolen cookie?</td>
+                        <td>2</td>
+                        <td id="quest-desc-2">What is the name of your first stolen cookie?</td>
                         <td><input type="text" id="exercise-2" placeholder="hint: starts with EST" required></td>
                         <td><button id="bt-2" type="button" onclick="submitExercise(2)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>Quest 3</td>
-                        <td>What is the hostname of the attacked SAP system reported to Sentinel?</td>
+                        <td>3</td>
+                        <td id="quest-desc-3">What is the hostname of the attacked SAP system reported to Sentinel?</td>
                         <td><input type="text" id="exercise-3" placeholder="hint: find it on your Incident details" required></td>
                         <td><button id="bt-3" type="button" onclick="submitExercise(3)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>Quest 4</td>
-                        <td>What built-in KQL function allows to get country name from IPs?</td>
+                        <td>4</td>
+                        <td id="quest-desc-4">What built-in KQL function allows to get country name from IPs?</td>
                         <td><input type="text" id="exercise-4" placeholder="" required></td>
                         <td><button id="bt-4" type="button" onclick="submitExercise(4)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>Quest 5</td>
-                        <td>Which LLM model are we using for this exercise?</td>
+                        <td>5</td>
+                        <td id="quest-desc-5">Which LLM model are we using for this exercise?</td>
                         <td><input type="text" id="exercise-5" placeholder="NO, it is not 🦙" required></td>
                         <td><button id="bt-5" type="button" onclick="submitExercise(5)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>Quest 6</td>
-                        <td>Which windows command allows you to clean up the evilginx certificate?</td>
+                        <td>6</td>
+                        <td id="quest-desc-6">Which windows command allows you to clean up the evilginx certificate?</td>
                         <td><input type="text" id="exercise-6" placeholder="Come on, you got this!" required></td>
                         <td><button id="bt-6" type="button" onclick="submitExercise(6)">Submit</button></td>
                     </tr>
@@ -196,6 +199,9 @@
             </table>
         </section>
     </main>
+    <footer>
+        <p>Brought to you by <a href="https://github.com/MartinPankraz/" target="_blank">Martin Pankraz</a></p>
+    </footer>
     <script>
         let playerId = null;
 
@@ -244,7 +250,10 @@
 
             if (exerciseInput.toLowerCase() === correctAnswer) {
                 alert('Quest ' + exerciseNumber + ' completed successfully!');
+                //update UI
                 document.getElementById('exercise-' + exerciseNumber).value = '';
+                const row = document.getElementById('quest-desc-' + exerciseNumber);
+                row.classList.add('less-highlighted');
                 //notify leaderboard
                 const data = {"player_id": playerId,"score": exerciseNumber, "operation": "set"}
                 postToLeaderboard(data, "score");
@@ -339,6 +348,43 @@
                 displayPlayerName(playerName);
             }
         };
+    </script>
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+    
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+    
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+    
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+    
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+    
+                drops[i]++;
+            }
+        }
+    
+        setInterval(draw, 33);
     </script>
 </body>
 
