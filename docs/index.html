@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <title>Hack Leaderboard</title>
     <style>
         body {
@@ -121,6 +122,10 @@
             background-color: #ccc;
             cursor: not-allowed;
         }
+        #quests-section[disabled] {
+            pointer-events: none;
+            opacity: 0.5;
+        }
     </style>
 </head>
 
@@ -138,7 +143,7 @@
             </form>
             <div class="player-name-display" id="player-name-display"></div>
         </section>
-        <section id="exercise-section">
+        <section id="quests-section" disabled>
             <h2>Indicate Exercise Completion</h2>
             <p>Find the answers on the <a href="https://github.com/MartinPankraz/sap-hacker-in-a-day/">GitHub repos</a> you are working with during this hack!</p>
             <table>
@@ -192,6 +197,8 @@
         </section>
     </main>
     <script>
+        let playerId = null;
+
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault();
             const playerName = document.getElementById('player-name').value;
@@ -203,25 +210,7 @@
                 signupButton.disabled = true;
                 // Create the JSON body
                 const data = {"name": playerName,"score": 0}
-
-                // Send the POST request
-                fetch('https://keepthescore.com/api/hlfrmddkpttte/player', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    mode: 'cors', // Add CORS mode
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    alert("Signed up successfully!");
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert("Oops, sth is wrong! Couldn't sign you up. Sad face.");
-                });
+                postToLeaderboard(data, "player");
             }
         });
 
@@ -256,14 +245,86 @@
             if (exerciseInput.toLowerCase() === correctAnswer) {
                 alert('Quest ' + exerciseNumber + ' completed successfully!');
                 document.getElementById('exercise-' + exerciseNumber).value = '';
+                //notify leaderboard
+                const data = {"player_id": playerId,"score": exerciseNumber, "operation": "set"}
+                postToLeaderboard(data, "score");
                 submitButton.disabled = true;
+
+                // Check if all quests are completed
+                if (areAllQuestsCompleted()) {
+                    showCelebrationPopup();
+                }
             } else {
                 alert('Please enter the correct text for Exercise ' + exerciseNumber + '.');
             }
         }
 
+        function areAllQuestsCompleted() {
+            for (let i = 1; i <= 6; i++) {
+                if (!document.getElementById('bt-' + i).disabled) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function showCelebrationPopup() {
+            // Display confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // Display a fancy popup
+            const popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.padding = '20px';
+            popup.style.backgroundColor = 'white';
+            popup.style.border = '2px solid black';
+            popup.style.zIndex = '1000';
+            popup.innerHTML = '<h1>Congratulations!</h1><p>You have completed all quests!</p>';
+            document.body.appendChild(popup);
+
+            // Remove the popup after 5 seconds
+            setTimeout(() => {
+                document.body.removeChild(popup);
+            }, 5000);
+        }
+
+        function postToLeaderboard(data, entity){
+            // Send the POST request
+            fetch('https://keepthescore.com/api/hlfrmddkpttte/'+entity+'/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors', // Add CORS mode
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.player && data.player.id){
+                    playerId = data.player.id; // Store the player_id
+                    console.log('Player created with ID:', playerId);
+                    // Enable the quests section
+                    document.getElementById('quests-section').removeAttribute('disabled');
+                    alert("Signed up successfully!");
+                }else{
+                    console.log('Success: loaded ', data.players.length + ' players');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("Oops, sth is wrong! Couldn't communicate with leaderboard. Sad face.");
+            });
+        }
+
         function displayPlayerName(name) {
-            document.getElementById('player-name-display').textContent = "Welcome, " + name + "!";
+            document.getElementById('player-name-display').textContent = "Welcome, " + name + "! 😎";
         }
 
         function getCookie(name) {
