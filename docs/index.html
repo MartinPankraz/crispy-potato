@@ -89,6 +89,21 @@
         td {
             vertical-align: middle;
         }
+        td:nth-child(1) {
+            width: 5%; /* Adjust as needed */
+        }
+
+        td:nth-child(2) {
+            width: 50%; /* Adjust as needed */
+        }
+
+        td:nth-child(3) {
+            width: 35%; /* Adjust as needed */
+        }
+
+        td:nth-child(4) {
+            width: 10%; /* Adjust as needed */
+        }
         td input {
             width: 90%;
             padding: 0.5rem;
@@ -128,12 +143,16 @@
         .less-highlighted {
             color: #888; /* Change to a less highlighted color */
         }
+        .completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>SAP Hacker in a day</h1>
+        <h1>👾SAP Hacker in a day👾</h1>
         <p>Complete the quests to earn points and get on the <a href="https://keepthescore.com/board/ncmkdskqrwjgr/">leaderboard!</a></p>
     </header>
     <canvas id="matrix"></canvas>
@@ -147,7 +166,7 @@
             <div class="player-name-display" id="player-name-display"></div>
         </section>
         <section id="quests-section" disabled>
-            <h2>Indicate Exercise Completion</h2>
+            <h2>Indicate Quest Completion</h2>
             <p>Find the answers on the <a href="https://github.com/MartinPankraz/sap-hacker-in-a-day/">GitHub repos</a> you are working with during this hack!</p>
             <table>
                 <thead>
@@ -198,6 +217,8 @@
                 </tbody>
             </table>
         </section>
+        <br>
+        <button id="clear-cookie-button" type="button">Clear Player Name Cookie</button>
     </main>
     <footer>
         <p>Brought to you by <a href="https://github.com/MartinPankraz/" target="_blank">Martin Pankraz</a></p>
@@ -205,12 +226,21 @@
     <script>
         let playerId = null;
 
+        document.getElementById('clear-cookie-button').addEventListener('click', function () {
+            const result = clearCookie();
+            if (result) {
+                alert('Player name cookie cleared!');
+            }else{
+                alert('No player name cookie found!');
+            }
+        });
+
         document.getElementById('signup-form').addEventListener('submit', function (event) {
             event.preventDefault();
             const playerName = document.getElementById('player-name').value;
             const signupButton = document.getElementById('signup-button');
             if (playerName) {
-                document.cookie = "playerName=" + playerName + "; path=/";
+                setCookie('playerName', playerName, 1);
                 displayPlayerName(playerName);
                 document.getElementById('player-name').value = '';
                 signupButton.disabled = true;
@@ -250,6 +280,13 @@
 
             if (exerciseInput.toLowerCase() === correctAnswer) {
                 alert('Quest ' + exerciseNumber + ' completed successfully!');
+                //remember completed quests
+                let completedQuests = getCookie('completedQuests');
+                completedQuests = completedQuests ? completedQuests.split(',') : [];
+                if (!completedQuests.includes(exerciseNumber.toString())) {
+                    completedQuests.push(exerciseNumber);
+                    setCookie('completedQuests', completedQuests.join(','), 7);
+                }
                 //update UI
                 document.getElementById('exercise-' + exerciseNumber).value = '';
                 const row = document.getElementById('quest-desc-' + exerciseNumber);
@@ -334,6 +371,19 @@
 
         function displayPlayerName(name) {
             document.getElementById('player-name-display').textContent = "Welcome, " + name + "! 😎";
+            const signupButton = document.getElementById('signup-button');
+            signupButton.disabled = true;
+        }
+
+        // Function to set a cookie
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
 
         function getCookie(name) {
@@ -342,10 +392,30 @@
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
+        function clearCookie() {
+            const playerName = getCookie('playerName');
+            if (playerName) {
+                document.cookie = 'playerName=; Max-Age=-99999999;';
+                document.cookie = 'completedQuests=; Max-Age=-99999999;';
+                return true;
+            }
+            return false;
+        }
+
         window.onload = function () {
             const playerName = getCookie('playerName');
             if (playerName) {
                 displayPlayerName(playerName);
+            }
+
+            // Check completed quests
+            let completedQuests = getCookie('completedQuests');
+            if (completedQuests) {
+                completedQuests = completedQuests.split(',');
+                completedQuests.forEach(function (questId) {
+                    document.getElementById('quest-desc-' + questId).classList.add('completed');
+                    document.getElementById('bt-' + questId).disabled = true;
+                });
             }
         };
     </script>
