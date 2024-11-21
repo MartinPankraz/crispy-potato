@@ -143,9 +143,8 @@
         .less-highlighted {
             color: #888; /* Change to a less highlighted color */
         }
-        .completed {
-            background-color: #d4edda;
-            color: #155724;
+        p {
+            font-size: 1em;
         }
     </style>
 </head>
@@ -167,7 +166,7 @@
         </section>
         <section id="quests-section" disabled>
             <h2>Indicate Quest Completion✅</h2>
-            <p>Find the answers on the <a href="https://github.com/MartinPankraz/sap-hacker-in-a-day/">GitHub repos</a> you are working with during this hack!</p>
+            <p>Find the answers on the <a href="https://github.com/MartinPankraz/sap-hacker-in-a-day/">GitHub repos</a> that you are working with during this hack!</p>
             <table>
                 <thead>
                     <tr>
@@ -355,6 +354,7 @@
             .then(data => {
                 if(data.player && data.player.id){
                     playerId = data.player.id; // Store the player_id
+                    setCookie('playerId', playerId, 1);
                     console.log('Player created with ID:', playerId);
                     // Enable the quests section
                     document.getElementById('quests-section').removeAttribute('disabled');
@@ -370,9 +370,12 @@
         }
 
         function displayPlayerName(name) {
+            //load prior's session player id
+            playerId = getCookie('playerId');
             document.getElementById('player-name-display').textContent = "Welcome, " + name + "! 😎";
             const signupButton = document.getElementById('signup-button');
             signupButton.disabled = true;
+            document.getElementById('quests-section').removeAttribute('disabled');
         }
 
         // Function to set a cookie
@@ -413,7 +416,7 @@
             if (completedQuests) {
                 completedQuests = completedQuests.split(',');
                 completedQuests.forEach(function (questId) {
-                    document.getElementById('quest-desc-' + questId).classList.add('completed');
+                    document.getElementById('quest-desc-' + questId).classList.add('less-highlighted');
                     document.getElementById('bt-' + questId).disabled = true;
                 });
             }
