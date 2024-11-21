@@ -395,8 +395,8 @@
         function clearCookie() {
             const playerName = getCookie('playerName');
             if (playerName) {
-                document.cookie = 'playerName=; Max-Age=-99999999;';
-                document.cookie = 'completedQuests=; Max-Age=-99999999;';
+                document.cookie = 'playerName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'completedQuests=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
                 return true;
             }
             return false;
