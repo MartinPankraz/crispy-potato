@@ -284,7 +284,7 @@
                 completedQuests = completedQuests ? completedQuests.split(',') : [];
                 if (!completedQuests.includes(exerciseNumber.toString())) {
                     completedQuests.push(exerciseNumber);
-                    setCookie('completedQuests', completedQuests.join(','), 7);
+                    setCookie('completedQuests', completedQuests.join(','), 1);
                 }
                 //update UI
                 document.getElementById('exercise-' + exerciseNumber).value = '';
