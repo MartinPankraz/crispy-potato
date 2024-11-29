@@ -215,6 +215,8 @@
                     </tr>
                 </tbody>
             </table>
+            <br>
+            <p id="badge-link" style="display: none;">Claim your badge <a href="https://dsagwsrgb4f3.z1.web.core.windows.net/" target="_blank">here!</a></p>
         </section>
         <br>
         <button id="clear-cookie-button" type="button">Clear Player Name Cookie</button>
@@ -279,6 +281,9 @@
 
             if (exerciseInput.toLowerCase() === correctAnswer) {
                 alert('Quest ' + exerciseNumber + ' completed successfully!');
+                if(exerciseNumber === 3){
+                    document.getElementById('badge-link').style.display = 'block';
+                }
                 //remember completed quests
                 let completedQuests = getCookie('completedQuests');
                 completedQuests = completedQuests ? completedQuests.split(',') : [];
@@ -291,7 +296,7 @@
                 const row = document.getElementById('quest-desc-' + exerciseNumber);
                 row.classList.add('less-highlighted');
                 //notify leaderboard
-                const data = {"player_id": playerId,"score": exerciseNumber, "operation": "set"}
+                const data = {"player_id": playerId,"score": exerciseNumber*10, "operation": "set"}
                 postToLeaderboard(data, "score");
                 submitButton.disabled = true;
 
