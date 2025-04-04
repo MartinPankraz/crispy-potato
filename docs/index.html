@@ -190,29 +190,29 @@
                         <td><button id="bt-2" type="button" onclick="submitExercise(2)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>3</td>
-                        <td id="quest-desc-3">What is the hostname of the attacked SAP system reported to Sentinel?</td>
-                        <td><input type="text" id="exercise-3" placeholder="hint: find it on your Incident details" required></td>
+                        <td>3a</td>
+                        <td id="quest-desc-3">What is the instance name of the attacked SAP system reported to Sentinel?</td>
+                        <td><input type="text" id="exercise-3" placeholder="hint: find it on your Incident details (extracted_instance_name)" required></td>
                         <td><button id="bt-3" type="button" onclick="submitExercise(3)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>4</td>
+                        <td>3b</td>
                         <td id="quest-desc-4">What built-in KQL function allows to get country name from IPs?</td>
                         <td><input type="text" id="exercise-4" placeholder="" required></td>
                         <td><button id="bt-4" type="button" onclick="submitExercise(4)">Submit</button></td>
                     </tr>
                     <tr>
-                        <td>5</td>
+                        <td>4</td>
                         <td id="quest-desc-5">Which LLM model are we using for this exercise?</td>
                         <td><input type="text" id="exercise-5" placeholder="NO, it is not 🦙" required></td>
                         <td><button id="bt-5" type="button" onclick="submitExercise(5)">Submit</button></td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td>6</td>
                         <td id="quest-desc-6">Which windows command allows you to clean up the evilginx certificate?</td>
                         <td><input type="text" id="exercise-6" placeholder="Come on, you got this!" required></td>
                         <td><button id="bt-6" type="button" onclick="submitExercise(6)">Submit</button></td>
-                    </tr>
+                    </tr>-->
                 </tbody>
             </table>
             <br>
@@ -264,7 +264,7 @@
                     correctAnswer = 'estsauth';
                     break;
                 case 3:
-                    correctAnswer = 'vhcala4hci';
+                    correctAnswer = 'sappm0';
                     break;
                 case 4:
                     correctAnswer = 'geo_info_from_ip_address';
