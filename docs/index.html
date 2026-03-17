@@ -192,7 +192,7 @@
                     <tr>
                         <td>3a</td>
                         <td id="quest-desc-3">What dessert does the 'loyalty upgrade' secretly swap your meal to? 🍰</td>
-                        <td><input type="text" id="exercise-3" placeholder="hint: The cake is a lie... or is it?" required></td>
+                        <td><input type="text" id="exercise-3" placeholder="hint: GLaDOS would be proud of this upgrade" required></td>
                         <td><button id="bt-3" type="button" onclick="submitExercise(3)">Submit</button></td>
                     </tr>
                     <tr>
@@ -213,6 +213,12 @@
                         <td><input type="text" id="exercise-6" placeholder="hint: Your app skipped the audition" required></td>
                         <td><button id="bt-6" type="button" onclick="submitExercise(6)">Submit</button></td>
                     </tr>-->
+                    <tr>
+                        <td>🎮</td>
+                        <td id="quest-desc-6">Bonus: In which legendary game does a rogue AI promise cake that never comes? 🤖🍰</td>
+                        <td><input type="text" id="exercise-6" placeholder="hint: 'the cake is a lie' — the AI lied, just like yours" required></td>
+                        <td><button id="bt-6" type="button" onclick="submitExercise(6)">Submit</button></td>
+                    </tr>
                 </tbody>
             </table>
             <br>
@@ -273,7 +279,7 @@
                     correctAnswer = 'cds up';
                     break;
                 case 6:
-                    correctAnswer = 'unaudited custom sap btp applications';
+                    correctAnswer = 'portal';
                     break;
                 default:
                     correctAnswer = '';
@@ -282,7 +288,7 @@
             if (exerciseInput.toLowerCase() === correctAnswer) {
                 alert('Quest ' + exerciseNumber + ' completed successfully!');
                 if(exerciseNumber === 3){
-                    document.getElementById('badge-link').style.display = 'block';
+                    //document.getElementById('badge-link').style.display = 'block';
                 }
                 //remember completed quests
                 let completedQuests = getCookie('completedQuests');
@@ -310,7 +316,7 @@
         }
 
         function areAllQuestsCompleted() {
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 if (!document.getElementById('bt-' + i).disabled) {
                     return false;
                 }
